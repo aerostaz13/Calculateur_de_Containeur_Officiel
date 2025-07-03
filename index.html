@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <title>Container Calculator</title>
+  <style>
+
+    body, input, button, label, table {
+    font-family: 'Inter', sans-serif; /* or Rubik, Nunito, etc. */
+    }
+    
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #D6EFFF;
+    }
+    table {
+      border-collapse: collapse;
+      margin-bottom: 1em;
+      width: 100%;
+      background-color: whitesmoke ;
+    }
+    th, td {
+      border: 1px solid #aaa;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f0f0f0;
+    }
+    input[type="number"] {
+      width: 80px;
+      padding: 4px;
+      font-size: 1rem;
+    }
+    input[type="checkbox"] {
+      transform: scale(1.2);
+      cursor: pointer;
+    }
+    /* From Uiverse.io by adamgiebl */ 
+    .cyberpunk-checkbox {
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #30cfd0;
+      border-radius: 5px;
+      background-color: transparent;
+      display: inline-block;
+      position: relative;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+
+    .cyberpunk-checkbox:before {
+      content: "";
+      background-color: #30cfd0;
+      display: block;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .cyberpunk-checkbox:checked:before {
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .cyberpunk-checkbox-label {
+      font-size: 18px;
+      color: #fff;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+    }
+    .btn-calculer {
+      padding: 10px 16px;
+      font-size: 1rem;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+    .btn-calculer:hover {
+      background-color: #0056b3;
+    }
+    #btn-reset {
+      background-color: #dc3545;
+      margin-left: 10px;
+    }
+    #btn-download {
+      background-color: #28a745;
+      margin-left: 10px;
+    }
+    .message {
+      margin-top: 1em;
+      padding: 10px;
+      border-radius: 4px;
+      font-size: 0.95rem;
+    }
+    .message.categorie {
+      margin-bottom: 1em;
+      border-left: 4px solid #555;
+      background-color: #f9f9f9;
+    }
+    .message-item {
+      margin-left: 1em;
+    }
+    em { font-size: 0.9rem; color: #555; }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px;
+    position: relative;
+    margin-top: 15px;
+  }
+  header h1 {
+    font-family: 'Inter', sans-serif;
+    font-size: 3rem;
+    font-weight: 600;
+  }
+  header img {
+    height: 60px;
+    object-fit: contain;
+    position: static;
+    margin-left: auto;
+    top: 10px;
+    right: 50px;
+    height: 300px;
+    width: 300px;
+  }
+
+  .custom-checkbox {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    font-size: 16px;
+    color: #333;
+    transition: color 0.3s;
+  }
+
+  .custom-checkbox input[type="checkbox"] {
+    display: none;
+  }
+
+  .custom-checkbox .checkmark {
+    width: 24px;
+    height: 24px;
+    border: 2px solid #333;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    transition: background-color 0.3s, border-color 0.3s, transform 0.3s;
+    transform-style: preserve-3d;
+  }
+
+  .custom-checkbox .checkmark::before {
+    content: "\2713";
+    font-size: 16px;
+    color: transparent;
+    transition: color 0.3s, transform 0.3s;
+  }
+
+  .custom-checkbox input[type="checkbox"]:checked + .checkmark {
+    background-color: #333;
+    border-color: #333;
+    transform: scale(1.1) rotateZ(360deg) rotateY(360deg);
+  }
+
+  .custom-checkbox input[type="checkbox"]:checked + .checkmark::before {
+    color: #fff;
+  }
+
+  .custom-checkbox:hover {
+    color: #666;
+  }
+
+  .custom-checkbox:hover .checkmark {
+    border-color: #666;
+    background-color: #f0f0f0;
+    transform: scale(1.05);
+  }
+
+  .custom-checkbox input[type="checkbox"]:focus + .checkmark {
+    box-shadow: 0 0 3px 2px rgba(0, 0, 0, 0.2);
+    outline: none;
+  }
+
+  .custom-checkbox .checkmark,
+  .custom-checkbox input[type="checkbox"]:checked + .checkmark {
+    transition: background-color 1.3s, border-color 1.3s, color 1.3s, transform 0.3s;
+  }
+
+  .form-description {
+    font-size: 1rem;
+    margin-bottom: 1.5em;
+    margin: 20px;
+  }
+
+  #image-tooltip {
+    position: absolute;
+    display: none;
+    pointer-events: none;
+    background: white;
+    border: 1px solid #ccc;
+    padding: 4px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    z-index: 1000;
+
+    /* max-size constraints */
+    max-width: 300px;
+    max-height: 200px;
+    /* note: no overflow:hidden here, so the image can't be clipped */
+  }
+
+  #image-tooltip img {
+    display: block;
+    /* scale down to fit the container, but never exceed it */
+    max-width: 100%;
+    max-height: 100%;
+    /* let the browser pick the right width/height to preserve aspect ratio */
+    width: auto;
+    height: auto;
+  }
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Calculateur de Container</h1>
+    <img src="logo_LOBS.png" alt = "Logo LOBS International Health">
+  </header>
+  <p class= "form-description">
+    <strong>Chers partenaires,</strong><br><br>
+    Afin de faciliter la confection de vos commandes et d’optimiser leur conditionnement, nous mettons à votre disposition ce calculateur de conteneurs. Il vous permet d’estimer, à partir des quantités saisies par produit, le nombre de cartons nécessaires ainsi que le volume et le poids totaux à expédier.<br><br>
+    Les données logistiques associées à chaque produit (quantité par carton, poids brut par carton, volume par carton) sont pré-remplies et non modifiables afin de garantir la cohérence des calculs. Tous les produits réfrigérés sont automatiquement identifiés et pris en compte dans le calcul des conteneurs adaptés.<br><br>
+    Une fois vos quantités saisies, cliquez sur <strong>« Calculer le(s) conteneur(s) optimal(aux) »</strong> pour visualiser la répartition idéale entre conteneurs secs et réfrigérés. Vous pouvez ensuite télécharger un récapitulatif au format Excel pour vous aider dans la préparation de votre commande.<br><br>
+    Toutes les quantités saisies sont exprimées en <strong>UNITÉS DE BASE</strong> (bolus, flacons, sachets…).<br><br>
+    Nous vous remercions de votre confiance et restons à votre disposition pour toute question ou précision complémentaire.
+  </p>
+  <!-- 1. Tableau des produits (quantité unitaire + carton poids/M³ + réfrigéré) -->
+  <section id="section-produits">
+    <table id="table-produits">
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Quantité unitaire</th>
+          <th>Quantité par carton</th>
+          <th>Poids Brut Carton (kg)</th>
+          <th>Volume par Carton (m³)</th>
+          <th>Réfrigéré ?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Lignes injectées par JavaScript -->
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 2. Tableau “Capacités des conteneurs” (modifiable) -->
+  <section id="section-conteneurs" style="margin-bottom: 1em;">
+    <h2>Capacités des conteneurs</h2>
+    <table id="table-conteneurs">
+      <thead>
+        <tr>
+          <th>Code conteneur</th>
+          <th>Capacité volume (m³)</th>
+          <th>Capacité poids (kg)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Lignes injectées par JavaScript -->
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 3. Boutons d’action -->
+  <section id="section-action" style="margin-bottom: 1em;">
+    <button id="btn-calculer" class="btn-calculer">
+      Calculer le(s) conteneur(s) optimal(aux)
+    </button>
+    <button id="btn-reset" class="btn-calculer">
+      Réinitialiser
+    </button>
+    <button id="btn-download" class="btn-calculer">
+      Télécharger Excel
+    </button>
+  </section>
+
+  <!-- 4. Zone de résultat -->
+  <section id="section-resultat">
+    <h2>Résultat</h2>
+    <div id="message-resultat"></div>
+  </section>
+
+  <!-- tooltip popup -->
+  <div id="image-tooltip">
+    <img src="" alt="preview">
+  </div>
+
+  <!-- 5. Librairie SheetJS pour générer l’Excel -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <!-- 6. Script principal -->
+   <script>
+
+    let produits = [{"ID":"ALB25V_50","Product":"ALBEN 2500 ","Presentation":"Seau de","Quantité":"50 boli","Qte_par_carton":600,"Volume (m3)":0.000094,"Poids (kg)":0.02333333,"Poids Brut Carton":14.0,"M3 par carton":0.0564,"Refrigerer":0},{"ID":"ALB25B_50","Product":"ALBEN  2500 ","Presentation":"Seau de","Quantité":"50 boli","Qte_par_carton":600,"Volume (m3)":0.000094,"Poids (kg)":0.02333333,"Poids Brut Carton":14.0,"M3 par carton":0.0564,"Refrigerer":0},{"ID":"ALB25V_5C","Product":"ALBEN 2500  vrac ","Presentation":"Seau de","Quantité":"500 boli","Qte_par_carton":1000,"Volume (m3)":0.0000595,"Poids (kg)":0.0195,"Poids Brut Carton":19.5,"M3 par carton":0.0595,"Refrigerer":0},{"ID":"ALB25BL_50","Product":"ALBEN 2500 BLISTER  ","Presentation":"Coffret de 5 Boîtes de 10 boli,","Quantité":"50 boli","Qte_par_carton":500,"Volume (m3)":0.0000718,"Poids (kg)":0.025,"Poids Brut Carton":12.5,"M3 par carton":0.0359,"Refrigerer":1},{"ID":"ALB25_B2","Product":"ALBEN 2500 Boîte de 2 boli ","Presentation":"Coffret de 50 boîtes de 2 boli,","Quantité":"100 boli","Qte_par_carton":600,"Volume (m3)":0.00007817,"Poids (kg)":0.02583333,"Poids Brut Carton":15.5,"M3 par carton":0.0469,"Refrigerer":0},{"ID":"ALB75_50","Product":"ALBEN 750","Presentation":"Seau de","Quantité":"50 boli","Qte_par_carton":1000,"Volume (m3)":0.00005,"Poids (kg)":0.0135,"Poids Brut Carton":13.5,"M3 par carton":0.05,"Refrigerer":0},{"ID":"ALB75_5C","Product":"ALBEN 750","Presentation":"Seau de","Quantité":"500 boli","Qte_par_carton":1000,"Volume (m3)":0.00007,"Poids (kg)":0.014,"Poids Brut Carton":14.0,"M3 par carton":0.07,"Refrigerer":0},{"ID":"ALB30_2K","Product":"ALBEN 300","Presentation":"Seau de","Quantité":"2000 cps","Qte_par_carton":4000,"Volume (m3)":0.00000923,"Poids (kg)":0.00375,"Poids Brut Carton":15.0,"M3 par carton":0.0369,"Refrigerer":0},{"ID":"ALB30BL_1C","Product":"ALBEN 300 Blister","Presentation":"Coffret de 5 Boîtes de 20 boli,","Quantité":"100 cps","Qte_par_carton":2000,"Volume (m3)":0.00001775,"Poids (kg)":0.005,"Poids Brut Carton":10.0,"M3 par carton":0.0355,"Refrigerer":1},{"ID":"ALB30_1C","Product":"ALBEN 300","Presentation":"Pot de","Quantité":"100 cps","Qte_par_carton":4000,"Volume (m3)":0.0000092,"Poids (kg)":0.003425,"Poids Brut Carton":13.7,"M3 par carton":0.0368,"Refrigerer":0},{"ID":"ALBCI_50","Product":"ALBEN CIBLE","Presentation":"Boîte de 25 pochettes de 2 boli,","Quantité":"50 boli","Qte_par_carton":1000,"Volume (m3)":0.0000594,"Poids (kg)":0.021,"Poids Brut Carton":21.0,"M3 par carton":0.0594,"Refrigerer":0},{"ID":"ALB10_1L","Product":"ALBEN 10%","Presentation":"Flacon de","Quantité":"1  L","Qte_par_carton":10,"Volume (m3)":0.0026,"Poids (kg)":1.25,"Poids Brut Carton":12.5,"M3 par carton":0.026,"Refrigerer":0},{"ID":"ANTI_1C","Product":"ANTITIC ","Presentation":"Flacon de","Quantité":"100 ml","Qte_par_carton":100,"Volume (m3)":0.00035,"Poids (kg)":0.127,"Poids Brut Carton":12.7,"M3 par carton":0.035,"Refrigerer":0},{"ID":"ANTI_250","Product":"ANTITIC ","Presentation":"Flacon de","Quantité":"250 ml","Qte_par_carton":40,"Volume (m3)":0.000675,"Poids (kg)":0.3175,"Poids Brut Carton":12.7,"M3 par carton":0.027,"Refrigerer":0},{"ID":"ANTI_1L","Product":"ANTITIC ","Presentation":"Flacon de","Quantité":"1  L","Qte_par_carton":10,"Volume (m3)":0.002,"Poids (kg)":1.32,"Poids Brut Carton":13.2,"M3 par carton":0.02,"Refrigerer":0},{"ID":"BIO5_50","Product":"BIOCYCLINE 5%  ","Presentation":"Flacon de","Quantité":"50 ml","Qte_par_carton":100,"Volume (m3)":0.00024,"Poids (kg)":0.12,"Poids Brut Carton":12.0,"M3 par carton":0.024,"Refrigerer":0},{"ID":"BIO5_1C","Product":"BIOCYCLINE 5%  ","Presentation":"Flacon de","Quantité":"100 ml","Qte_par_carton":80,"Volume (m3)":0.00039875,"Poids (kg)":0.225,"Poids Brut Carton":18.0,"M3 par carton":0.0319,"Refrigerer":0},{"ID":"BIO10_50","Product":"BIOCYCLINE 10%   ","Presentation":"Flacon de","Quantité":"50 ml","Qte_par_carton":100,"Volume (m3)":0.00024,"Poids (kg)":0.12,"Poids Brut Carton":12.0,"M3 par carton":0.024,"Refrigerer":0},{"ID":"BIO10_1C","Product":"BIOCYCLINE 10%   ","Presentation":"Flacon de","Quantité":"100 ml","Qte_par_carton":80,"Volume (m3)":0.00039875,"Poids (kg)":0.225,"Poids Brut Carton":18.0,"M3 par carton":0.0319,"Refrigerer":0},{"ID":"BIO20_50","Product":"BIOCYCLINE 20%  ","Presentation":"Flacon de","Quantité":"50ml","Qte_par_carton":100,"Volume (m3)":0.00024,"Poids (kg)":0.12,"Poids Brut Carton":12.0,"M3 par carton":0.024,"Refrigerer":0},{"ID":"BIO20_1C","Product":"BIOCYCLINE 20%  ","Presentation":"Flacon de","Quantité":"100ml","Qte_par_carton":80,"Volume (m3)":0.00039875,"Poids (kg)":0.225,"Poids Brut Carton":18.0,"M3 par carton":0.0319,"Refrigerer":0},{"ID":"DELSE_20","Product":"DELTA LOBS SE ","Presentation":"Flacon de","Quantité":"20ml","Qte_par_carton":200,"Volume (m3)":0.000125,"Poids (kg)":0.0335,"Poids Brut Carton":6.7,"M3 par carton":0.025,"Refrigerer":1},{"ID":"DELSE_1C","Product":"DELTA LOBS SE ","Presentation":"Flacon de","Quantité":"100ml","Qte_par_carton":100,"Volume (m3)":0.0003,"Poids (kg)":0.129,"Poids Brut Carton":12.9,"M3 par carton":0.03,"Refrigerer":1},{"ID":"DELSE_1L","Product":"DELTA LOBS SE ","Presentation":"Flacon de","Quantité":"1 L","Qte_par_carton":10,"Volume (m3)":0.0024,"Poids (kg)":1.14,"Poids Brut Carton":11.4,"M3 par carton":0.024,"Refrigerer":1},{"ID":"DELPO_5C","Product":"DELTA LOBS PO ","Presentation":"Flacon double sortie de","Quantité":"500 ml","Qte_par_carton":20,"Volume (m3)":0.00075,"Poids (kg)":0.675,"Poids Brut Carton":13.5,"M3 par carton":0.015,"Refrigerer":1},{"ID":"DISTO_1K","Product":"DISTOCUR","Presentation":"Seaux de","Quantité":"1000 boli","Qte_par_carton":4000,"Volume (m3)":0.00000903,"Poids (kg)":0.0033,"Poids Brut Carton":13.2,"M3 par carton":0.0361,"Refrigerer":0},{"ID":"DISTO_1C","Product":"DISTOCUR","Presentation":"Pot  de","Quantité":"100 boli","Qte_par_carton":4000,"Volume (m3)":0.0000092,"Poids (kg)":0.003625,"Poids Brut Carton":14.5,"M3 par carton":0.0368,"Refrigerer":0},{"ID":"DOXYL_1C","Product":"DOXYLOBS 500","Presentation":"Boîte de sachets de 100g,","Quantité":"25 sachets","Qte_par_carton":200,"Volume (m3)":0.0003215,"Poids (kg)":0.1175,"Poids Brut Carton":23.5,"M3 par carton":0.0643,"Refrigerer":0},{"ID":"DOXYL_1K","Product":"DOXYLOBS 500","Presentation":"Pot de","Quantité":"1 Kg","Qte_par_carton":18,"Volume (m3)":0.00305556,"Poids (kg)":1.16666667,"Poids Brut Carton":21.0,"M3 par carton":0.055,"Refrigerer":0},{"ID":"FERL_1C","Product":"FERLOBSTRAN B12","Presentation":"Flacon de","Quantité":"100ml","Qte_par_carton":60,"Volume (m3)":0.00038333,"Poids (kg)":0.23333333,"Poids Brut Carton":14.0,"M3 par carton":0.023,"Refrigerer":1},{"ID":"FORZE_GD","Product":"FORTEZEN","Presentation":"Boîte de 10 sachets de","Quantité":"23,6 g","Qte_par_carton":500,"Volume (m3)":0.0002,"Poids (kg)":0.038,"Poids Brut Carton":19.0,"M3 par carton":0.1,"Refrigerer":0},{"ID":"FORZE_PT","Product":"FORTEZEN","Presentation":"Boîte de 10 sachets de","Quantité":"2,36 g","Qte_par_carton":2000,"Volume (m3)":0.0000485,"Poids (kg)":0.007,"Poids Brut Carton":14.0,"M3 par carton":0.097,"Refrigerer":0},{"ID":"FORZ+_GD","Product":"FORTEZEN PLUS","Presentation":"Boîte de 10 sachets de","Quantité":"25g","Qte_par_carton":500,"Volume (m3)":0.0002,"Poids (kg)":0.038,"Poids Brut Carton":19.0,"M3 par carton":0.1,"Refrigerer":1},{"ID":"FORZ+_PT","Product":"FORTEZEN PLUS","Presentation":"Boîte de 10 sachets de","Quantité":"2,5g","Qte_par_carton":2000,"Volume (m3)":0.00004825,"Poids (kg)":0.00725,"Poids Brut Carton":14.5,"M3 par carton":0.0965,"Refrigerer":1},{"ID":"IVMEC_10","Product":"IVERMEC ","Presentation":"flacon de","Quantité":"10 ml","Qte_par_carton":600,"Volume (m3)":0.00005567,"Poids (kg)":0.02666667,"Poids Brut Carton":16.0,"M3 par carton":0.0334,"Refrigerer":0},{"ID":"IVMEC_20","Product":"IVERMEC ","Presentation":"flacon de","Quantité":"20 ml","Qte_par_carton":400,"Volume (m3)":0.00010125,"Poids (kg)":0.0375,"Poids Brut Carton":15.0,"M3 par carton":0.0405,"Refrigerer":0},{"ID":"IVMEC_50","Product":"IVERMEC ","Presentation":"flacon plastique de","Quantité":"50 ml","Qte_par_carton":100,"Volume (m3)":0.00024,"Poids (kg)":0.08,"Poids Brut Carton":8.0,"M3 par carton":0.024,"Refrigerer":0},{"ID":"IVMEC_1C","Product":"IVERMEC ","Presentation":"flacon plastique de","Quantité":"100 ml","Qte_par_carton":80,"Volume (m3)":0.00039875,"Poids (kg)":0.225,"Poids Brut Carton":18.0,"M3 par carton":0.0319,"Refrigerer":0},{"ID":"LEV20_1C","Product":"LEVALOBS 200","Presentation":"Boîte de sachets de 100g,","Quantité":"25 sachets","Qte_par_carton":200,"Volume (m3)":0.0003215,"Poids (kg)":0.1175,"Poids Brut Carton":23.5,"M3 par carton":0.0643,"Refrigerer":0},{"ID":"LEV20_1K","Product":"LEVALOBS 200","Presentation":"Pot de","Quantité":"1kg","Qte_par_carton":18,"Volume (m3)":0.00269444,"Poids (kg)":1.16666667,"Poids Brut Carton":21.0,"M3 par carton":0.0485,"Refrigerer":0},{"ID":"LOBCL_1C","Product":"LOBACALCIUM","Presentation":"Flacon de","Quantité":"100ml","Qte_par_carton":80,"Volume (m3)":0.00035,"Poids (kg)":0.225,"Poids Brut Carton":18.0,"M3 par carton":0.028,"Refrigerer":1},{"ID":null,"Product":"LOBAMAX VOLAILLE","Presentation":"Flacon de","Quantité":"100ml","Qte_par_carton":80,"Volume (m3)":0.0002625,"Poids (kg)":0.15,"Poids Brut Carton":12.0,"M3 par carton":0.021,"Refrigerer":0},{"ID":"LOBAX_5C","Product":"LOBAMAX VOLAILLE","Presentation":"Flacon de","Quantité":"500ml","Qte_par_carton":24,"Volume (m3)":0.0007375,"Poids (kg)":0.625,"Poids Brut Carton":15.0,"M3 par carton":0.0177,"Refrigerer":0},{"ID":"LOBAX_5L","Product":"LOBAMAX VOLAILLE","Presentation":"Flacon de","Quantité":"5L","Qte_par_carton":4,"Volume (m3)":0.008825,"Poids (kg)":5.75,"Poids Brut Carton":23.0,"M3 par carton":0.0353,"Refrigerer":0},{"ID":null,"Product":"LOBAMAX RPC","Presentation":"Flacon de","Quantité":"500ml","Qte_par_carton":24,"Volume (m3)":0.0007375,"Poids (kg)":0.625,"Poids Brut Carton":15.0,"M3 par carton":0.0177,"Refrigerer":0},{"ID":"LOBLA_CO","Product":"LOBAMIN LAYERS","Presentation":"Boîte de","Quantité":"25 sachets de 150g et 5 sachets 15g","Qte_par_carton":120,"Volume (m3)":0.00040333,"Poids (kg)":0.14166667,"Poids Brut Carton":17.0,"M3 par carton":0.0484,"Refrigerer":1},{"ID":"LOBLA_1K","Product":"LOBAMIN LAYERS","Presentation":"Seau de","Quantité":"1kg","Qte_par_carton":18,"Volume (m3)":0.00269444,"Poids (kg)":1.16666667,"Poids Brut Carton":21.0,"M3 par carton":0.0485,"Refrigerer":1},{"ID":"LPHEN_1C","Product":"LOBAPHEN","Presentation":"Pot  de","Quantité":"100 boli","Qte_par_carton":400,"Volume (m3)":0.0000071,"Poids (kg)":0.0035,"Poids Brut Carton":14.0,"M3 par carton":0.0284,"Refrigerer":0},{"ID":"LOBAINJ_1C","Product":"LOBAVIT INJECTABLE","Presentation":"Flacon de","Quantité":"100ml","Qte_par_carton":80,"Volume (m3)":0.00035,"Poids (kg)":0.225,"Poids Brut Carton":18.0,"M3 par carton":0.028,"Refrigerer":1},{"ID":"LOBA+_15","Product":"LOBAVIT PLUS 15g","Presentation":"Boîte de 100","Quantité":"sachet de 15g","Qte_par_carton":1000,"Volume (m3)":0.00007,"Poids (kg)":0.0185,"Poids Brut Carton":18.5,"M3 par carton":0.07,"Refrigerer":1},{"ID":"LOBAV_1C","Product":"LOBAVIT VOLAILLE","Presentation":"Boîte de","Quantité":"25 sachets de 100 gr","Qte_par_carton":200,"Volume (m3)":0.0003215,"Poids (kg)":0.1175,"Poids Brut Carton":23.5,"M3 par carton":0.0643,"Refrigerer":1},{"ID":"LOBAV_1K","Product":"LOBAVIT VOLAILLE","Presentation":"Seau de","Quantité":"1kg","Qte_par_carton":18,"Volume (m3)":0.00269444,"Poids (kg)":1.16666667,"Poids Brut Carton":21.0,"M3 par carton":0.0485,"Refrigerer":1},{"ID":"LOBAZ_GD","Product":"LOBAZEN","Presentation":"Boîte de 10 sachets de","Quantité":"23,6 g","Qte_par_carton":500,"Volume (m3)":0.0002,"Poids (kg)":0.038,"Poids Brut Carton":19.0,"M3 par carton":0.1,"Refrigerer":0},{"ID":"LOBAZ_PT","Product":"LOBAZEN","Presentation":"Boîte de 10 sachets de","Quantité":"2,36 g","Qte_par_carton":2000,"Volume (m3)":0.0000485,"Poids (kg)":0.0075,"Poids Brut Carton":15.0,"M3 par carton":0.097,"Refrigerer":0},{"ID":"LOBZ+_GD","Product":"LOBAZEN PLUS","Presentation":"Boîte de 10 sachets de","Quantité":"23,9 g","Qte_par_carton":500,"Volume (m3)":0.0002,"Poids (kg)":0.038,"Poids Brut Carton":19.0,"M3 par carton":0.1,"Refrigerer":1},{"ID":"LOBZ+_PT","Product":"LOBAZEN PLUS","Presentation":"Boîte de 10 sachets de","Quantité":"2,39 g","Qte_par_carton":2000,"Volume (m3)":0.0000485,"Poids (kg)":0.0075,"Poids Brut Carton":15.0,"M3 par carton":0.097,"Refrigerer":1},{"ID":"LOBIC25_1C","Product":"LOBICOX","Presentation":"Boîte de","Quantité":"25 sachets de 100 gr","Qte_par_carton":100,"Volume (m3)":0.000385,"Poids (kg)":0.12,"Poids Brut Carton":12.0,"M3 par carton":0.0385,"Refrigerer":0},{"ID":"LOBIC_1K","Product":"LOBICOX","Presentation":"Boîte de","Quantité":"10 sachets de 100 gr","Qte_par_carton":100,"Volume (m3)":0.00057,"Poids (kg)":0.141,"Poids Brut Carton":14.1,"M3 par carton":0.057,"Refrigerer":0},{"ID":"LOBIC15_10","Product":"LOBICOX","Presentation":"Boîte de","Quantité":"100 sachets de 15 gr","Qte_par_carton":1000,"Volume (m3)":0.0000695,"Poids (kg)":0.018,"Poids Brut Carton":18.0,"M3 par carton":0.0695,"Refrigerer":0},{"ID":"LOBIC10_1C","Product":"LOBICOX","Presentation":"Seaux de","Quantité":"1kg","Qte_par_carton":18,"Volume (m3)":0.00269444,"Poids (kg)":1.16666667,"Poids Brut Carton":21.0,"M3 par carton":0.0485,"Refrigerer":0},{"ID":"LOBID_SA","Product":"LOBIDIUM","Presentation":"Boîte de 10 sachets de","Quantité":"1g","Qte_par_carton":2000,"Volume (m3)":0.0000291,"Poids (kg)":0.00625,"Poids Brut Carton":12.5,"M3 par carton":0.0582,"Refrigerer":1},{"ID":"LOBID+_SA","Product":"LOBIDIUM PLUS 125mg","Presentation":"Boîte de 10 sachets de","Quantité":"1g","Qte_par_carton":2000,"Volume (m3)":0.00002865,"Poids (kg)":0.00475,"Poids Brut Carton":9.5,"M3 par carton":0.0573,"Refrigerer":1},{"ID":"LOBIF_CO","Product":"LOBIFUGE VOLAILLE","Presentation":"Coffret de 10 boîtes de","Quantité":"100 cps","Qte_par_carton":100,"Volume (m3)":0.0000345,"Poids (kg)":0.006,"Poids Brut Carton":6.0,"M3 par carton":0.0345,"Refrigerer":1},{"ID":"LVACN_40","Product":"LOBIVAC NEW","Presentation":" flacon de 40 doses, ","Quantité":"20ml","Qte_par_carton":550,"Volume (m3)":0.00014727,"Poids (kg)":0.036,"Poids Brut Carton":19.8,"M3 par carton":0.081,"Refrigerer":1},{"ID":"LVACN_1C","Product":"LOBIVAC NEW","Presentation":" flacon de 100 doses, ","Quantité":"50ml","Qte_par_carton":232,"Volume (m3)":0.00035086,"Poids (kg)":0.08318966,"Poids Brut Carton":19.3,"M3 par carton":0.0814,"Refrigerer":1},{"ID":"LVACN_1K","Product":"LOBIVAC NEW","Presentation":" flacon de 1000 doses, ","Quantité":"500ml","Qte_par_carton":30,"Volume (m3)":0.00233333,"Poids (kg)":0.66233333,"Poids Brut Carton":19.87,"M3 par carton":0.07,"Refrigerer":1},{"ID":"LIVEAIN_1K","Product":"LOBIVAC AI NEW ","Presentation":" flacon de 1000 doses, ","Quantité":"250ml","Qte_par_carton":60,"Volume (m3)":0.00135,"Poids (kg)":0.35,"Poids Brut Carton":21.0,"M3 par carton":0.081,"Refrigerer":1},{"ID":"LIVEAIN_2K","Product":"LOBIVAC AI NEW ","Presentation":" flacon de 2000 doses, ","Quantité":"500ml","Qte_par_carton":30,"Volume (m3)":0.0011,"Poids (kg)":0.629,"Poids Brut Carton":18.87,"M3 par carton":0.033,"Refrigerer":1},{"ID":"LOBZL1_1C","Product":"LOBIZOL 1000","Presentation":"Pot  de","Quantité":"100 boli","Qte_par_carton":400,"Volume (m3)":0.0000102,"Poids (kg)":0.005125,"Poids Brut Carton":20.5,"M3 par carton":0.0408,"Refrigerer":0},{"ID":"LOBZL3_25K","Product":"LOBIZOL 300","Presentation":"Seaux de","Quantité":"2500 boli","Qte_par_carton":5000,"Volume (m3)":0.00000992,"Poids (kg)":0.003,"Poids Brut Carton":15.0,"M3 par carton":0.049619,"Refrigerer":0},{"ID":"LOBZL3_1C","Product":"LOBIZOL 300","Presentation":"Pot  de","Quantité":"100 boli","Qte_par_carton":4000,"Volume (m3)":0.0000071,"Poids (kg)":0.003375,"Poids Brut Carton":13.5,"M3 par carton":0.0284,"Refrigerer":0},{"ID":"LOSPRY_21","Product":"LOBSPRAY","Presentation":"Spray de","Quantité":"210ml","Qte_par_carton":24,"Volume (m3)":0.00086667,"Poids (kg)":0.29583333,"Poids Brut Carton":7.1,"M3 par carton":0.0208,"Refrigerer":1},{"ID":"LOBUMX_60","Product":"LOBUVIT MAXI","Presentation":"Boîte de","Quantité":"60 boli","Qte_par_carton":960,"Volume (m3)":0.0000326,"Poids (kg)":0.01770833,"Poids Brut Carton":17.0,"M3 par carton":0.0313,"Refrigerer":1},{"ID":"LOBUMN_1C","Product":"LOBUVIT MINI","Presentation":"Boîte de","Quantité":"100 boli","Qte_par_carton":2000,"Volume (m3)":0.0000111,"Poids (kg)":0.00475,"Poids Brut Carton":9.5,"M3 par carton":0.0222,"Refrigerer":1},{"ID":"MAXICO_1C","Product":"MAXICOVIT","Presentation":"Coffret de 10 boîtes de","Quantité":"100 cps","Qte_par_carton":1000,"Volume (m3)":0.0000301,"Poids (kg)":0.0085,"Poids Brut Carton":8.5,"M3 par carton":0.0301,"Refrigerer":1},{"ID":"MAXIL25_1C","Product":"MAXI LAYER ","Presentation":"Boîte de","Quantité":"25 sachets de 100 gr","Qte_par_carton":200,"Volume (m3)":0.0003215,"Poids (kg)":0.1225,"Poids Brut Carton":24.5,"M3 par carton":0.0643,"Refrigerer":1},{"ID":"MAXIL100_10","Product":"MAXI LAYER ","Presentation":"Boîte de","Quantité":"10 sachets de 100 gr","Qte_par_carton":100,"Volume (m3)":0.00037,"Poids (kg)":0.141,"Poids Brut Carton":14.1,"M3 par carton":0.037,"Refrigerer":1},{"ID":"MAXIL100_15","Product":"MAXI LAYER ","Presentation":"Boîte de","Quantité":"100 sachets de 15 gr","Qte_par_carton":1000,"Volume (m3)":0.0000696,"Poids (kg)":0.0185,"Poids Brut Carton":18.5,"M3 par carton":0.0696,"Refrigerer":1},{"ID":"MAXIL_1K","Product":"MAXI LAYER ","Presentation":"Seau de","Quantité":"1kg ","Qte_par_carton":18,"Volume (m3)":0.00269444,"Poids (kg)":1.2,"Poids Brut Carton":21.6,"M3 par carton":0.0485,"Refrigerer":1},{"ID":"OXY50_25","Product":"OXYMEG 50 ","Presentation":"Boîte de","Quantité":"25 sachets de 100 gr","Qte_par_carton":100,"Volume (m3)":0.000316,"Poids (kg)":0.12,"Poids Brut Carton":12.0,"M3 par carton":0.0316,"Refrigerer":0},{"ID":"OXY50_1C","Product":"OXYMEG 50 ","Presentation":"Boîte de","Quantité":"10 sachets de 100 gr","Qte_par_carton":100,"Volume (m3)":0.000367,"Poids (kg)":0.141,"Poids Brut Carton":14.1,"M3 par carton":0.0367,"Refrigerer":0},{"ID":"OXY50_10","Product":"OXYMEG 50 ","Presentation":"Boîte de","Quantité":"100 sachets de 15 gr","Qte_par_carton":1000,"Volume (m3)":0.0000695,"Poids (kg)":0.018,"Poids Brut Carton":18.0,"M3 par carton":0.0695,"Refrigerer":0},{"ID":"OXY50_1K","Product":"OXYMEG 50 ","Presentation":"Seau de","Quantité":"1 kg","Qte_par_carton":18,"Volume (m3)":0.00269444,"Poids (kg)":1.16666667,"Poids Brut Carton":21.0,"M3 par carton":0.0485,"Refrigerer":0},{"ID":"PENIF_4M","Product":"PENI FORTE 4 MEGA","Presentation":" Boîte de","Quantité":"10 flacons","Qte_par_carton":6000,"Volume (m3)":0.00008333,"Poids (kg)":0.03833333,"Poids Brut Carton":23.0,"M3 par carton":0.05,"Refrigerer":0},{"ID":"STRE_1C","Product":"STREPEN MAXI ","Presentation":"Flacon de","Quantité":"100 ml","Qte_par_carton":80,"Volume (m3)":0.00030375,"Poids (kg)":0.225,"Poids Brut Carton":18.0,"M3 par carton":0.0243,"Refrigerer":1},{"ID":"SULFA33_50","Product":"SULFA LOBS 33 ","Presentation":"Flacon de","Quantité":"50ml","Qte_par_carton":100,"Volume (m3)":0.000255,"Poids (kg)":0.125,"Poids Brut Carton":12.5,"M3 par carton":0.0255,"Refrigerer":0},{"ID":"SULFA33_1C","Product":"SULFA LOBS 33 ","Presentation":"Flacon de","Quantité":"100ml","Qte_par_carton":80,"Volume (m3)":0.00039875,"Poids (kg)":0.225,"Poids Brut Carton":18.0,"M3 par carton":0.0319,"Refrigerer":0},{"ID":"SULFA33_5C","Product":"SULFA LOBS 33 ","Presentation":"Flacon de","Quantité":"500ml","Qte_par_carton":25,"Volume (m3)":0.000944,"Poids (kg)":0.52,"Poids Brut Carton":13.0,"M3 par carton":0.0236,"Refrigerer":0},{"ID":"TYDOX_1C25","Product":"TYL-DOX ","Presentation":"Boîte de","Quantité":"25 sachets de 100 gr","Qte_par_carton":100,"Volume (m3)":0.000316,"Poids (kg)":0.12,"Poids Brut Carton":12.0,"M3 par carton":0.0316,"Refrigerer":0},{"ID":"TYDOX_1C10","Product":"TYL-DOX ","Presentation":"Boîte de","Quantité":"10 sachets de 100 gr","Qte_par_carton":100,"Volume (m3)":0.000367,"Poids (kg)":0.12,"Poids Brut Carton":12.0,"M3 par carton":0.0367,"Refrigerer":0},{"ID":"TYDOX_10","Product":"TYL-DOX ","Presentation":"Boîte de","Quantité":"100 sachets de 15 gr","Qte_par_carton":1000,"Volume (m3)":0.0000696,"Poids (kg)":0.018,"Poids Brut Carton":18.0,"M3 par carton":0.0696,"Refrigerer":0},{"ID":"TDOX_1K","Product":"TYL-DOX ","Presentation":"Seau de","Quantité":"1Kg","Qte_par_carton":18,"Volume (m3)":0.00269444,"Poids (kg)":1.2,"Poids Brut Carton":21.6,"M3 par carton":0.0485,"Refrigerer":0},{"ID":"TDOX_5K","Product":"TYL-DOX ","Presentation":"Seau de","Quantité":"5kg","Qte_par_carton":4,"Volume (m3)":0.01375,"Poids (kg)":6.0,"Poids Brut Carton":24.0,"M3 par carton":0.055,"Refrigerer":0},{"ID":"TYLOF_50","Product":"TYLO FORT 200","Presentation":"Flacon de","Quantité":"50 ml","Qte_par_carton":100,"Volume (m3)":0.000255,"Poids (kg)":0.125,"Poids Brut Carton":12.5,"M3 par carton":0.0255,"Refrigerer":0},{"ID":"TYLOF_1C","Product":"TYLO FORT 200","Presentation":"Flacon de","Quantité":"100 ml","Qte_par_carton":80,"Volume (m3)":0.00039875,"Poids (kg)":0.225,"Poids Brut Carton":18.0,"M3 par carton":0.0319,"Refrigerer":0}]
+
+    let conteneurs = [{"NAME ":"TC20","ID ":201,"Poids_max":28000,"Capacite_plus_de_quatre":29.5,"Capacite_quatre_ou_moins":31,"Cout_du_conteneur":25000,"Allowed":"J1,J2,J3,J4,J5,J6,A1,A2,A3,L1,L2,L3,L4,L5,L6,L7,L8,LU1,LV1,AM1,Y1,C1"},{"NAME ":"TC20R","ID ":202,"Poids_max":28000,"Capacite_plus_de_quatre":27.0,"Capacite_quatre_ou_moins":31,"Cout_du_conteneur":25000,"Allowed":"J1,J2,J3,J4,J5,J6,A1,A2,A3,L1,L2,L3,L4,L5,L6,L7,L8,LU1,LV1,AM1,Y1,C1"},{"NAME ":"TC40","ID ":401,"Poids_max":26000,"Capacite_plus_de_quatre":60.0,"Capacite_quatre_ou_moins":62,"Cout_du_conteneur":25000,"Allowed":"J1,J2,J3,J4,J5,J6,A1,A2,A3,L1,L2,L3,L4,L5,L6,L7,L8,LU1,LV1,AM1,Y1,C1"},{"NAME ":"TC40R","ID ":402,"Poids_max":26000,"Capacite_plus_de_quatre":57.0,"Capacite_quatre_ou_moins":62,"Cout_du_conteneur":25000,"Allowed":"J1,J2,J3,J4,J5,J6,A1,A2,A3,L1,L2,L3,L4,L5,L6,L7,L8,LU1,LV1,AM1,Y1,C1"},{"NAME ":"TC40HC","ID ":403,"Poids_max":26000,"Capacite_plus_de_quatre":69.0,"Capacite_quatre_ou_moins":71,"Cout_du_conteneur":25000,"Allowed":"J1,J2,J3,J4,J5,J6,A1,A2,A3,L1,L2,L3,L4,L5,L6,L7,L8,LU1,LV1,AM1,Y1,C1"},{"NAME ":"TC40HCR","ID ":404,"Poids_max":26000,"Capacite_plus_de_quatre":66.0,"Capacite_quatre_ou_moins":71,"Cout_du_conteneur":25000,"Allowed":"J1,J2,J3,J4,J5,J6,A1,A2,A3,L1,L2,L3,L4,L5,L6,L7,L8,LU1,LV1,AM1,Y1,C1"}];    // Contenu de conteneurs.json
+
+    // Pour stocker le “dernier résultat” (utilisé lors de l’export Excel)
+    let lastResult = {
+      ref: null,          // { totalVol, totalPds, resultat }
+      dry: null,          // id. pour la partie sèche restante
+      rowsProduits: []    // [ { Référence, Nom, QtéUnité, QtéParCarton, PoidsCarton, VolCarton, FullCartons, CartonsÀExpédier, VolumeTotal, PoidsTotal, Refrigerer }, … ]
+    };
+
+    /**
+     * Au chargement de la page :
+     * 2. Générer le tableau des produits (avec inputs pour quantités/carton/poids/vol/carton/réfrigéré)
+     * 3. Générer le tableau des conteneurs (modifiable)
+     * 4. Brancher les événements des boutons
+     */
+    window.addEventListener("DOMContentLoaded", async () => {
+      try {
+
+
+        // 2) Tableau des produits
+        genererTableProduits();
+
+        // 3) Tableau des conteneurs
+        genererTableConteneursOverrides();
+
+        // 4) Boutons
+        document.getElementById("btn-calculer")
+                .addEventListener("click", traiterCalcul);
+        document.getElementById("btn-reset")
+                .addEventListener("click", resetForm);
+        document.getElementById("btn-download")
+                .addEventListener("click", downloadExcel);
+      } catch (err) {
+        alert("Erreur au chargement des données : " + err.message);
+        console.error(err);
+      }
+    });
+
+    /**
+     * Génère le <tbody> du tableau produits :
+     * – Colonne Référence (texte)
+     * – Colonne Nom (texte)
+     * – Colonne Quantité unitaire (input number)
+     * – Colonne Quantité par carton (input number, modifiable)
+     * – Colonne Poids Brut Carton (input number, modifiable)
+     * – Colonne Volume par Carton (input number, modifiable)
+     * – Colonne Réfrigéré ? (checkbox modifiable)
+     */
+    function genererTableProduits() {
+      const tbody = document.querySelector("#table-produits tbody");
+      tbody.innerHTML = "";
+
+      produits.forEach((prod, i) => {
+        const codeRef         = prod["ID"]|| "";
+        const nomProd         = prod["Product"] + " "+ prod["Presentation"] + " " + prod["Quantité"] || " ";
+        const qtParCartonDef  = parseFloat(prod["Qte_par_carton"])   || 1;
+        const poidsCartonDef  = parseFloat(prod["Poids Brut Carton"])    || 0;
+        const volCartonDef    = parseFloat(prod["M3 par carton"])        || 0;
+        const isRefrig        = prod["Refrigerer"] == 1;
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>
+            <span
+            class="product-name"
+            ${prod.ID ? `data-image="picture/${prod.ID}.png"` : ""}
+            >
+              ${nomProd}
+            </span>
+          </td>
+          <td>
+            <input
+              type="number"
+              id="quantite-${i}"
+              min="0"
+              step="1"
+              value="0"
+              style="width: 60px;"
+            />
+          </td>
+          <td>
+            <span
+              id="prod-qtparcarton-${i}"
+              style="width: 60px; display: inline-block;"
+            >
+              ${qtParCartonDef}
+            </span>
+          </td>
+          <td>
+            <span
+              id="prod-poidscarton-${i}"
+              style="width: 60px; display: inline-block;"
+            >              
+            ${poidsCartonDef.toLocaleString("en", { useGrouping: false, minimumFractionDigits: 3 })}
+          </td>
+          <td>
+            <span
+              id="prod-volcarton-${i}"
+              style="width: 60px; display: inline-block;"
+            >
+            ${volCartonDef.toLocaleString("en", { useGrouping: false, minimumFractionDigits: 6 })}
+          </td>
+          <td style="text-align: center;">
+            <label class="custom-checkbox"> 
+              <input
+                type="checkbox"
+                id="prod-refrig-${i}"
+                ${isRefrig ? "checked" : ""}
+                disabled
+              />
+              <span class ="checkmark"></span>
+            </label>
+          </td>
+        `;
+        tbody.appendChild(tr);
+
+        const tooltip = document.getElementById("image-tooltip");
+        const tooltipImg = tooltip.querySelector("img");
+
+        document.querySelectorAll(".product-name").forEach(el => {
+          el.addEventListener("mouseenter", () => {
+            const imgSrc = el.dataset.image;
+            if (!imgSrc) return;
+            tooltipImg.src = imgSrc;
+            tooltip.style.display = "block";
+
+            const rect = el.getBoundingClientRect();
+            tooltip.style.left = rect.right + window.scrollX + "px";
+            tooltip.style.top  = (rect.top + window.scrollY - 200) + "px";
+          });
+
+          el.addEventListener("mouseleave", () => {
+            tooltip.style.display = "none";
+          });
+        });
+      });
+    }
+
+    /**
+     * Génère le <tbody> du tableau “Capacités des conteneurs (modifiable)” :
+     * – Colonne Code conteneur
+     * – Colonne Capacité volume (input number)
+     * – Colonne Capacité poids (input number)
+     */
+    function genererTableConteneursOverrides() {
+      const tbody = document.querySelector("#table-conteneurs tbody");
+      tbody.innerHTML = "";
+
+      conteneurs.forEach((cont, i) => {
+        const codeCont = (cont["NAME "] || "").trim();
+        const volDef   = parseFloat(cont["Capacite_plus_de_quatre"]);
+        const pdsDef   = parseFloat(cont["Poids_max"]);
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${codeCont}</td>
+          <td>
+            <span
+              id="cont-vol-${i}" 
+            >                     
+              ${volDef.toLocaleString("en", { useGrouping: false, minimumFractionDigits: 6 })}
+          </td>
+          <td>
+            <span
+              id="cont-pds-${i}"
+            >  
+              ${pdsDef.toLocaleString("en", { useGrouping: false, minimumFractionDigits: 3 })}
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    /**
+     * Met à jour en mémoire :
+     *  - prod["Quantité par carton"]
+     *  - prod["Poids Brut Carton"]
+     *  - prod["M3 par carton"]
+     *  - prod["Refrigerer"]
+     * d’après les inputs du tableau produits
+     */
+    function updateProduitsFromOverrides() {
+      produits.forEach((prod, i) => {
+        // Quantité par carton
+        const qtCartonInput = document.getElementById(`prod-qtparcarton-${i}`);
+        if (qtCartonInput) {
+          const newQtCarton = parseInt(qtCartonInput.textContent, 10);
+          if (!isNaN(newQtCarton) && newQtCarton > 0) {
+            prod["Quantité par carton"] = newQtCarton;
+          }
+        }
+        // Poids Brut Carton
+        const poidsCartonInput = document.getElementById(`prod-poidscarton-${i}`);
+        if (poidsCartonInput) {
+          const newPoidsCarton = parseFloat(poidsCartonInput.textContent);
+          if (!isNaN(newPoidsCarton)) {
+            prod["Poids Brut Carton"] = newPoidsCarton;
+          }
+        }
+        // Volume par Carton
+        const volCartonInput = document.getElementById(`prod-volcarton-${i}`);
+        if (volCartonInput) {
+          const newVolCarton = parseFloat(volCartonInput.textContent);
+          if (!isNaN(newVolCarton)) {
+            prod["M3 par carton"] = newVolCarton;
+          }
+        }
+        // Réfrigéré ?
+        const checkbox = document.getElementById(`prod-refrig-${i}`);
+        if (checkbox) {
+          prod["Refrigerer"] = checkbox.checked ? 1 : 0;
+        }
+      });
+    }
+
+    /**
+     * Met à jour en mémoire les capacités volume/poids des conteneurs,
+     * d’après ce que l’utilisateur a saisi dans les inputs du tableau conteneurs.
+     */
+    function updateConteneursFromOverrides() {
+      conteneurs.forEach((cont, i) => {
+        const volInput = document.getElementById(`cont-vol-${i}`);
+        const pdsInput = document.getElementById(`cont-pds-${i}`);
+        if (volInput && pdsInput) {
+          const newVol = parseFloat(volInput.textContent);
+          const newPds = parseFloat(pdsInput.textContent);
+          if (!isNaN(newVol)) {
+            cont["Capacite_plus_de_quatre"] = newVol;
+          }
+          if (!isNaN(newPds)) {
+            cont["Poids_max"] = newPds;
+          }
+        }
+      });
+    }
+
+    /**
+     * Lorsqu’on clique sur “Calculer” :
+     * 1) On récupère toutes les modifications (quantités, carton, poids, volume, réfrigéré).
+     * 2) Pour chaque produit, on calcule :
+     *    - nb de cartons entiers
+     *    - cartons à expédier (entier supérieur si reste)
+     *    - poids total (cartons * poids brut carton)
+     *    - volume total (cartons * volume/carton)
+     *    - message si carton incomplet
+     * 3) On agrège en “réfrigéré” vs “non réfrigéré”
+     * 4) On trouve les conteneurs optimaux (réfrigérés puis secs)
+     * 5) On affiche le résultat (+ messages sur cartons incomplets)
+     */
+    function traiterCalcul() {
+      // 1) Mettre à jour en mémoire toutes les infos produit & conteneur
+      updateProduitsFromOverrides();
+      updateConteneursFromOverrides();
+
+      // Initialisation des totaux
+      let totalRefVol = 0, totalRefPds = 0;
+      let totalDryVol = 0, totalDryPds = 0;
+      lastResult.rowsProduits = [];
+      const missingMessages = [];
+
+      // 2) Pour chaque produit, calculer cartons et totaux
+      produits.forEach((prod, i) => {
+        const qtUnits         = parseInt(document.getElementById(`quantite-${i}`).value, 10) || 0;
+        const isRefrig        = prod["Refrigerer"] == 1;
+        const unitsPerCarton  = parseInt(prod["Quantité par carton"], 10) || 1;
+        const poidsParCarton  = parseFloat(prod["Poids Brut Carton"])    || 0;
+        const volParCarton    = parseFloat(prod["M3 par carton"])        || 0;
+
+        if (qtUnits <= 0) {
+          // Aucune unité ⇒ on stocke row vide pour l’export
+          lastResult.rowsProduits.push({
+            Référence:        prod["ID"],
+            Nom:              prod["Product"] + " "+ prod["Presentation"] + " " + prod["Quantité"],
+            QtéUnité:         0,
+            QtéParCarton:     unitsPerCarton,
+            PoidsCarton:      poidsParCarton,
+            VolCarton:        volParCarton,
+            FullCartons:      0,
+            CartonsÀExpédier: 0,
+            VolumeTotal:      0,
+            PoidsTotal:       0,
+            Refrigerer:       prod["Refrigerer"]
+          });
+          return;
+        }
+
+        // Nombre de cartons entiers et reste
+        const fullCartons    = Math.floor(qtUnits / unitsPerCarton);
+        const remainderUnits = qtUnits % unitsPerCarton;
+        const cartonsToShip  = fullCartons + (remainderUnits > 0 ? 1 : 0);
+
+        // Total poids/volume (par cartons)
+        const totalWeight = cartonsToShip * poidsParCarton;
+        const totalVolume = cartonsToShip * volParCarton;
+
+        // Si reste > 0 ⇒ message carton incomplet
+        if (remainderUnits > 0) {
+          const missing = unitsPerCarton - remainderUnits;
+          missingMessages.push(
+            `Il manque ${missing} unité(s) de ${prod["ID"]} pour remplir le dernier carton.`
+          );
+        }
+
+        // Ajouter aux totaux réfrigéré ou sec
+        if (isRefrig) {
+          totalRefPds += totalWeight;
+          totalRefVol += totalVolume;
+        } else {
+          totalDryPds += totalWeight;
+          totalDryVol += totalVolume;
+        }
+
+        // Stocker dans rowsProduits pour l’export Excel
+        lastResult.rowsProduits.push({
+          Référence:        prod["ID"],
+          Nom:              prod["Product"] + " "+ prod["Presentation"] + " " + prod["Quantité"],
+          QtéUnité:         qtUnits,
+          QtéParCarton:     unitsPerCarton,
+          PoidsCarton:      parseFloat(poidsParCarton.toFixed(3)),
+          VolCarton:        parseFloat(volParCarton.toFixed(6)),
+          FullCartons:      fullCartons,
+          CartonsÀExpédier: cartonsToShip,
+          VolumeTotal:      parseFloat(totalVolume.toFixed(6)),
+          PoidsTotal:       parseFloat(totalWeight.toFixed(3)),
+          Refrigerer:       prod["Refrigerer"]
+        });
+      });
+
+      const totalVolAll = totalRefVol + totalDryVol;
+      const totalPdsAll = totalRefPds + totalDryPds;
+
+      // Si aucune quantité totale (ni réfrigéré, ni sec)
+      if (totalVolAll === 0 && totalPdsAll === 0) {
+        afficherMessage({ html: `<div class="message"><em>Aucune quantité saisie.</em></div>` });
+        lastResult.ref = null;
+        lastResult.dry = null;
+        return;
+      }
+
+      // Initialisation
+      lastResult.ref = null;
+      lastResult.dry = null;
+      let htmlResultat = "";
+      let resteVolRef = 0, restePdsRef = 0;
+
+      // 3) Partie RÉFRIGÉRÉE
+      if (totalRefVol > 0 || totalRefPds > 0) {
+        // Filtrer les conteneurs réfrigérés (ex : “TC20R”, “TC40R”, “TC40CHR”)
+        const contRef = conteneurs.filter(c => {
+          const code = (c["NAME "] || "").trim();
+          return code === "TC20R" || code === "TC40R" || code === "TC40CHR";
+        });
+        const resRef = findOptimalContainers(totalRefVol, totalRefPds, contRef);
+
+        lastResult.ref = {
+          totalVol: totalRefVol,
+          totalPds: totalRefPds,
+          resultat: resRef
+        };
+
+        resteVolRef = resRef.resteVolume;
+        restePdsRef = resRef.restePoids;
+
+        htmlResultat += formatResultMessage(
+          "Conteneur(s) réfrigéré(s) pour produits réfrigérés",
+          totalRefVol,
+          totalRefPds,
+          resRef
+        );
+      }
+
+      // 4) Placer le sec dans l’espace restant Réfrigéré
+      let remainDryVol = totalDryVol;
+      let remainDryPds = totalDryPds;
+      if ((totalRefVol > 0 || totalRefPds > 0) && (totalDryVol > 0 || totalDryPds > 0)) {
+        if (remainDryVol <= resteVolRef && remainDryPds <= restePdsRef) {
+          htmlResultat += `
+            <div class="message categorie">
+              <div class="message-item">Tous les cartons de produits non réfrigérés tiennent dans l’espace restant des conteneurs réfrigérés.</div>
+            </div>
+          `;
+          remainDryVol = 0;
+          remainDryPds = 0;
+        } else {
+          remainDryVol -= resteVolRef;
+          remainDryPds -= restePdsRef;
+          remainDryVol = Math.max(0, remainDryVol);
+          remainDryPds = Math.max(0, remainDryPds);
+        }
+      }
+
+      // 5) Si du sec reste, conteneurs secs
+      if (remainDryVol > 0 || remainDryPds > 0) {
+        const contDry = conteneurs.filter(c => {
+          const code = (c["NAME "] || "").trim();
+          return code !== "TC20R" && code !== "TC40R" && code !== "TC40CHR";
+        });
+        const resDry = findOptimalContainers(remainDryVol, remainDryPds, contDry);
+        lastResult.dry = {
+          totalVol: remainDryVol,
+          totalPds: remainDryPds,
+          resultat: resDry
+        };
+        htmlResultat += formatResultMessage(
+          "Conteneur(s) sec(s) pour produits non réfrigérés restants",
+          remainDryVol,
+          remainDryPds,
+          resDry
+        );
+      } else {
+        if (lastResult.ref) {
+          lastResult.dry = null;
+          htmlResultat += `
+            <div class="message categorie">
+              <div class="message-item">Aucun container sec requis (tout tient dans le(s) container(s) réfrigéré(s)).</div>
+            </div>
+          `;
+        }
+      }
+
+      // 6) Ajouter les messages sur cartons incomplets
+      if (missingMessages.length > 0) {
+        htmlResultat += `
+          <div class="message categorie">
+            <div class="message-item titre">Cartons incomplets :</div>
+        `;
+        missingMessages.forEach(msg => {
+          htmlResultat += `<div class="message-item">⚠️ ${msg}</div>`;
+        });
+        htmlResultat += `</div>`;
+      }
+
+      // 7) Affichage final
+      afficherMessage({ html: htmlResultat });
+    }
+
+    /**
+     * findOptimalContainers(totalVol, totalPds, availableContainers):
+     * – totalVol, totalPds : besoins à couvrir
+     * – availableContainers : array ({ "NAME ", "Capacite_plus_de_quatre", "Poids_max" })
+     *
+     * Renvoie { containers:[codes], capVolume, capPoids, resteVolume, restePoids } ou .error
+     */
+    function findOptimalContainers(totalVol, totalPds, availableContainers) {
+      // 1. Construire et trier la liste
+      const list = availableContainers
+        .map(c => ({
+          code:   (c["NAME "] || "").trim(),
+          volCap: parseFloat(c["Capacite_plus_de_quatre"]),
+          pdsCap: parseFloat(c["Poids_max"])
+        }))
+        .filter(c => c.code && !isNaN(c.volCap) && !isNaN(c.pdsCap))
+        .sort((a, b) => {
+          if (a.volCap !== b.volCap) return a.volCap - b.volCap;
+          return a.pdsCap - b.pdsCap;
+        });
+
+      // 2. Chercher un conteneur unique adapté
+      let meilleurMono = null;
+      for (let c of list) {
+        if (c.volCap >= totalVol && c.pdsCap >= totalPds) {
+          const wasteVol = c.volCap - totalVol;
+          const wastePds = c.pdsCap - totalPds;
+          if (
+            !meilleurMono ||
+            wasteVol < meilleurMono.wasteVol ||
+            (wasteVol === meilleurMono.wasteVol && wastePds < meilleurMono.wastePds)
+          ) {
+            meilleurMono = { container: c, wasteVol, wastePds };
+          }
+        }
+      }
+      if (meilleurMono) {
+        const c = meilleurMono.container;
+        return {
+          containers:   [c.code],
+          capVolume:    c.volCap,
+          capPoids:     c.pdsCap,
+          resteVolume:  parseFloat((c.volCap - totalVol).toFixed(6)),
+          restePoids:   parseFloat((c.pdsCap - totalPds).toFixed(3))
+        };
+      }
+
+      // 3. Rechercher la meilleure paire (i ≤ j)
+      let meilleurPair = null;
+      for (let i = 0; i < list.length; i++) {
+        for (let j = i; j < list.length; j++) {
+          const c1 = list[i];
+          const c2 = list[j];
+          const volSum = c1.volCap + c2.volCap;
+          const pdsSum = c1.pdsCap + c2.pdsCap;
+          if (volSum >= totalVol && pdsSum >= totalPds) {
+            const wasteVol = volSum - totalVol;
+            const wastePds = pdsSum - totalPds;
+            if (
+              !meilleurPair ||
+              wasteVol < meilleurPair.wasteVol ||
+              (wasteVol === meilleurPair.wasteVol && wastePds < meilleurPair.wastePds)
+            ) {
+              meilleurPair = { pair: [c1, c2], wasteVol, wastePds };
+            }
+          }
+        }
+      }
+      if (meilleurPair) {
+        const [c1, c2] = meilleurPair.pair;
+        return {
+          containers:   [c1.code, c2.code],
+          capVolume:    c1.volCap + c2.volCap,
+          capPoids:     c1.pdsCap + c2.pdsCap,
+          resteVolume:  parseFloat(((c1.volCap + c2.volCap) - totalVol).toFixed(6)),
+          restePoids:   parseFloat(((c1.pdsCap + c2.pdsCap) - totalPds).toFixed(3))
+        };
+      }
+
+      // 4. Sinon, multiplier le + grand
+      if (list.length === 0) {
+        return {
+          containers:   [],
+          capVolume:    0,
+          capPoids:     0,
+          resteVolume:  0,
+          restePoids:   0,
+          error:        "Aucun conteneur disponible dans cette catégorie."
+        };
+      }
+      const largest = list[list.length - 1];
+      const nbByVol = Math.ceil(totalVol  / largest.volCap);
+      const nbByPds = Math.ceil(totalPds  / largest.pdsCap);
+      const nbNeeded = Math.max(nbByVol, nbByPds);
+      const totalCapVol = largest.volCap * nbNeeded;
+      const totalCapPds = largest.pdsCap * nbNeeded;
+
+      return {
+        containers:   Array(nbNeeded).fill(largest.code),
+        capVolume:    totalCapVol,
+        capPoids:     totalCapPds,
+        resteVolume:  parseFloat((totalCapVol - totalVol).toFixed(6)),
+        restePoids:   parseFloat((totalCapPds - totalPds).toFixed(3))
+      };
+    }
+
+    /**
+     * formatResultMessage(titreCat, totalVol, totalPds, resultat) :
+     * Génère le HTML d’une “catégorie” (R ou Sec) :
+     * – titreCat : ex. “Conteneur(s) réfrigéré(s) …”
+     * – totalVol/totalPds : besoins réels
+     * – resultat : {containers, capVolume, capPoids, resteVolume, restePoids}
+     */
+    function formatResultMessage(titreCat, totalVol, totalPds, resultat) {
+      let html = `<div class="message categorie">`;
+      html += `<div class="message-item titre">${titreCat} :</div>`;
+
+      if (resultat.error) {
+        html += `<div class="message-item">⚠️ ${resultat.error}</div>`;
+      } else {
+        const codes = resultat.containers.join(" + ");
+        html += `<div class="message-item">📦 Conteneur(s) sélectionné(s) : <strong>${codes}</strong></div>`;
+        html += `<div class="message-item">🔍 Capacité totale : <strong>${resultat.capVolume.toLocaleString("fr-FR", { minimumFractionDigits: 6 })} m³</strong> et <strong>${resultat.capPoids.toLocaleString("fr-FR", { minimumFractionDigits: 3 })} kg</strong></div>`;
+        html += `<div class="message-item">⚖️ Besoins totaux : <strong>${totalVol.toLocaleString("fr-FR", { minimumFractionDigits: 6 })} m³</strong> et <strong>${totalPds.toLocaleString("fr-FR", { minimumFractionDigits: 3 })} kg</strong></div>`;
+        html += `<div class="message-item">✅ Espace restant : <strong>${resultat.resteVolume.toLocaleString("fr-FR", { minimumFractionDigits: 6 })} m³</strong> et <strong>${resultat.restePoids.toLocaleString("fr-FR", { minimumFractionDigits: 3 })} kg</strong></div>`;
+      }
+      html += `</div>`;
+      return html;
+    }
+
+    /**
+     * afficherMessage({ html }) :
+     * Injecte le HTML passé dans la div #message-resultat.
+     */
+    function afficherMessage({ html }) {
+      const zone = document.getElementById("message-resultat");
+      zone.innerHTML = html;
+    }
+
+    /**
+     * resetForm() :
+     * – Remet toutes les quantités à zéro
+     * – Réinitialise les inputs “Quantité par carton”, “Poids Carton”, “Volume Carton” et “Réfrigéré ?” à leurs valeurs JSON par défaut
+     * – Vide la zone résultat
+     */
+    function resetForm() {
+      // Réinitialiser toutes les quantités à zéro et les cases réfrigéré + champs carton
+      produits.forEach((prod, i) => {
+        const inputQt             = document.getElementById(`quantite-${i}`);
+        const inputQtCarton       = document.getElementById(`prod-qtparcarton-${i}`);
+        const inputPoidsCarton    = document.getElementById(`prod-poidscarton-${i}`);
+        const inputVolCarton      = document.getElementById(`prod-volcarton-${i}`);
+        const checkboxRef         = document.getElementById(`prod-refrig-${i}`);
+
+        if (inputQt)           inputQt.value = 0;
+        if (inputQtCarton)     inputQtCarton.value = prod["Quantité par carton"];
+        if (inputPoidsCarton)  inputPoidsCarton.value = parseFloat(prod["Poids Brut Carton"]).toLocaleString("en", { useGrouping: false, minimumFractionDigits: 3 });
+        if (inputVolCarton)    inputVolCarton.value = parseFloat(prod["M3 par carton"]).toLocaleString("en", { useGrouping: false, minimumFractionDigits: 6 });
+        if (checkboxRef)       checkboxRef.checked = prod["Refrigerer"] == 1;
+      });
+
+      // Vider la zone résultat
+      document.getElementById("message-resultat").innerHTML = "";
+
+      // Reset lastResult
+      lastResult.ref = null;
+      lastResult.dry = null;
+      lastResult.rowsProduits = [];
+
+      // Réafficher les tableaux pour remettre tout à jour
+      genererTableProduits();
+      genererTableConteneursOverrides();
+    }
+
+    /**
+     * packProducts() :
+     * Répartit unitairement les produits dans des conteneurs physiques
+     * après qu’on ait sélectionné les conteneurs via findOptimalContainers.
+     * On travaille ici par cartons : on soustrait du vol/poids du conteneur
+     * la valeur “VolCarton” et “PoidsCarton” pour chaque carton placé.
+     *
+     * Retourne un tableau de conteneurs physiques avec leur contenu.
+     */
+    function packProducts() {
+      const containersPhysiques = [];
+      const compteurCode = {};
+
+      // Ajoute “count” exemplaires du conteneur codePad
+      // en leur attribuant un suffixe unique (“-1”, “-2”, …).
+      function addContainers(codePad, count) {
+        const info = conteneurs.find(c => (c["NAME "] || "").trim() === codePad);
+        if (!info) return;
+        const volCap = parseFloat(info["Capacite_plus_de_quatre"]);
+        const pdsCap = parseFloat(info["Poids_max"]);
+
+        for (let i = 0; i < count; i++) {
+          compteurCode[codePad] = (compteurCode[codePad] || 0) + 1;
+          const index = compteurCode[codePad];
+          const codeUnique = `${codePad}-${index}`;
+          containersPhysiques.push({
+            codeUnique: codeUnique,
+            baseCode: codePad,
+            remainingVol: volCap,
+            remainingPds: pdsCap,
+            items: {}
+          });
+        }
+      }
+
+      // 1) Ajouter conteneurs réfrigérés
+      if (lastResult.ref && lastResult.ref.resultat) {
+        lastResult.ref.resultat.containers.forEach(codePad =>
+          addContainers(codePad, 1)
+        );
+      }
+      // 2) Ajouter conteneurs secs
+      if (lastResult.dry && lastResult.dry.resultat) {
+        lastResult.dry.resultat.containers.forEach(codePad =>
+          addContainers(codePad, 1)
+        );
+      }
+
+      // 3) Construire la liste des produits à placer (avec QtéUnité et infos carton à jour)
+      const produitsList = lastResult.rowsProduits
+        .map(r => ({
+          reference:      r.Référence,
+          refrigerer:     r.Refrigerer,
+          qtyUnits:       r.QtéUnité,
+          unitsPerCarton: parseInt(r.QtéParCarton, 10),
+          volCarton:      parseFloat(r.VolCarton),
+          pdsCarton:      parseFloat(r.PoidsCarton)
+        }))
+        .filter(r => r.qtyUnits > 0);
+
+      // 4) Placer les cartons réfrigérés dans conteneurs R
+      produitsList
+        .filter(p => p.refrigerer == 1)
+        .forEach(p => {
+          let unitsToPlace = p.qtyUnits;
+          while (unitsToPlace > 0) {
+            // On cherche un conteneur R avec assez de place pour un carton entier
+            const idx = containersPhysiques.findIndex(c =>
+              c.baseCode.endsWith("R") &&
+              c.remainingVol >= p.volCarton &&
+              c.remainingPds >= p.pdsCarton
+            );
+            if (idx < 0) {
+              console.warn(`Impossible de placer ${p.reference} réfrigéré`);
+              break;
+            }
+            const container = containersPhysiques[idx];
+            container.remainingVol -= p.volCarton;
+            container.remainingPds -= p.pdsCarton;
+            // On stocke “unitsPerCarton” dans items
+            container.items[p.reference] = (container.items[p.reference] || 0) + p.unitsPerCarton;
+            unitsToPlace -= p.unitsPerCarton;
+          }
+        });
+
+      // 5) Placer les cartons secs (d’abord dans R s’il reste de la place, sinon dans Sec)
+      produitsList
+        .filter(p => p.refrigerer == 0)
+        .forEach(p => {
+          let unitsToPlace = p.qtyUnits;
+          while (unitsToPlace > 0) {
+            // Essayer un conteneur R
+            let idx = containersPhysiques.findIndex(c =>
+              c.baseCode.endsWith("R") &&
+              c.remainingVol >= p.volCarton &&
+              c.remainingPds >= p.pdsCarton
+            );
+            if (idx < 0) {
+              // Sinon, chercher un Sec
+              idx = containersPhysiques.findIndex(c =>
+                !c.baseCode.endsWith("R") &&
+                c.remainingVol >= p.volCarton &&
+                c.remainingPds >= p.pdsCarton
+              );
+            }
+            if (idx < 0) {
+              console.warn(`Impossible de placer ${p.reference} non-réfrigéré`);
+              break;
+            }
+            const container = containersPhysiques[idx];
+            container.remainingVol -= p.volCarton;
+            container.remainingPds -= p.pdsCarton;
+            container.items[p.reference] = (container.items[p.reference] || 0) + p.unitsPerCarton;
+            unitsToPlace -= p.unitsPerCarton;
+          }
+        });
+
+      return containersPhysiques;
+    }
+
+    /**
+     * downloadExcel() :
+     * – Vérifie qu’un calcul existe (lastResult.ref ou lastResult.dry)
+     * – Construit trois feuilles dans un même classeur :
+     *     1) “Containers”  : résumé global par catégorie (R / Sec)
+     *     2) “Produits”    : détail produit (QtéUnité, QtéParCarton, n° cartons, totaux)
+     *     3) “Breakdown”   : détail par conteneur physique
+     * – Télécharge le fichier “composition_containers.xlsx”.
+     */
+    function downloadExcel() {
+      if (!lastResult.ref && !lastResult.dry) {
+        alert("Aucun résultat à exporter. Veuillez d'abord faire un calcul.");
+        return;
+      }
+
+      // 1) Feuille “Containers”
+      const dataContainers = [];
+      if (lastResult.ref) {
+        const { totalVol, totalPds, resultat } = lastResult.ref;
+        const usedVol = parseFloat((resultat.capVolume - resultat.resteVolume).toFixed(6));
+        const usedPds = parseFloat((resultat.capPoids - resultat.restePoids).toFixed(3));
+        dataContainers.push({
+          Category:        "Réfrigéré",
+          Containers:      resultat.containers.join(" + "),
+          CapVolume:       resultat.capVolume,
+          CapPoids:        resultat.capPoids,
+          UsedVolume:      usedVol,
+          UsedPoids:       usedPds,
+          RemainingVolume: resultat.resteVolume,
+          RemainingPoids:  resultat.restePoids
+        });
+      }
+      if (lastResult.dry) {
+        const { totalVol, totalPds, resultat } = lastResult.dry;
+        const usedVol = parseFloat((resultat.capVolume - resultat.resteVolume).toFixed(6));
+        const usedPds = parseFloat((resultat.capPoids - resultat.restePoids).toFixed(3));
+        dataContainers.push({
+          Category:        "Sec",
+          Containers:      resultat.containers.join(" + "),
+          CapVolume:       resultat.capVolume,
+          CapPoids:        resultat.capPoids,
+          UsedVolume:      usedVol,
+          UsedPoids:       usedPds,
+          RemainingVolume: resultat.resteVolume,
+          RemainingPoids:  resultat.restePoids
+        });
+      }
+
+      // 2) Feuille “Produits”
+      const dataProduits = lastResult.rowsProduits.map(row => ({
+        Référence:        row.Référence,
+        Nom:              row.Nom,
+        QtéUnité:         row.QtéUnité,
+        QtéParCarton:     row.QtéParCarton,
+        PoidsCarton:      row.PoidsCarton,
+        VolCarton:        row.VolCarton,
+        FullCartons:      row.FullCartons,
+        CartonsÀExpédier: row.CartonsÀExpédier,
+        VolumeTotal:      row.VolumeTotal,
+        PoidsTotal:       row.PoidsTotal,
+        Réfrigéré:        row.Refrigerer
+      }));
+
+      // 3) Feuille “Breakdown” (via packProducts)
+      const containersPhysiques = packProducts();
+      const dataBreakdown = [];
+      containersPhysiques.forEach(container => {
+        const codeCont = container.codeUnique;
+        for (const [ref, totalUnitsInContainer] of Object.entries(container.items)) {
+          dataBreakdown.push({
+            ContainerCode: codeCont,
+            Référence:     ref,
+            Quantité:      totalUnitsInContainer
+          });
+        }
+        if (Object.keys(container.items).length === 0) {
+          dataBreakdown.push({
+            ContainerCode: codeCont,
+            Référence:     "",
+            Quantité:      0
+          });
+        }
+      });
+
+      // 4) Création du classeur et des feuilles
+      const wb = XLSX.utils.book_new();
+
+      const wsContainers = XLSX.utils.json_to_sheet(dataContainers, {
+        header: [
+          "Category",
+          "Containers",
+          "CapVolume",
+          "CapPoids",
+          "UsedVolume",
+          "UsedPoids",
+          "RemainingVolume",
+          "RemainingPoids"
+        ]
+      });
+      XLSX.utils.book_append_sheet(wb, wsContainers, "Containers");
+
+      const wsProduits = XLSX.utils.json_to_sheet(dataProduits, {
+        header: [
+          "Référence",
+          "Nom",
+          "QtéUnité",
+          "QtéParCarton",
+          "PoidsCarton",
+          "VolCarton",
+          "FullCartons",
+          "CartonsÀExpédier",
+          "VolumeTotal",
+          "PoidsTotal",
+          "Réfrigéré"
+        ]
+      });
+      XLSX.utils.book_append_sheet(wb, wsProduits, "Produits");
+
+      const wsBreakdown = XLSX.utils.json_to_sheet(dataBreakdown, {
+        header: [
+          "ContainerCode",
+          "Référence",
+          "Quantité"
+        ]
+      });
+      XLSX.utils.book_append_sheet(wb, wsBreakdown, "Breakdown");
+
+      XLSX.writeFile(wb, "composition_containers.xlsx");
+    }
+
+
+  </script>
+</body>
+</html>
+
